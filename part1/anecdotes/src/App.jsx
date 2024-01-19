@@ -14,10 +14,8 @@ function App() {
         'The only way to go fast, is to go well.'
     ]
     
-    const [votesPerAnectote, setVotesPerAnecdote] = useState(Array(8).fill(0))
-
+    const [votesPerAnectote, setVotesPerAnecdote] = useState(Array(anecdotes.length).fill(0))
     const randomRangeInt = (low, high) => Math.floor(Math.random() * (high - low) + low)
-
     const nextAnecdote = () => setSelected(randomRangeInt(0, anecdotes.length) % anecdotes.length)
 
     const addVote = () => {
