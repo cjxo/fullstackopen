@@ -1,68 +1,56 @@
-import { useState } from 'react'
-import "./app.css" 
+import { useState } from 'react';
 
-const Button = ({onClick, text}) => {
-    return <button onClick={onClick}>{text}</button>
-}
+const Button = ({ onClick, text }) => {
+  return <button onClick={onClick}>{text}</button>
+};
 
-const StatisticLine = ({text, value}) => {
+const StatisticLine = ({ value, text }) => {
+  return (
+    <tr>
+      <td>{text} {value}</td>
+    </tr>
+  );
+};
+
+const Statistics = ({ good, neutral, bad }) => {
+  const all = good + neutral + bad;
+  // https://developer.mozilla.org/en-US/docs/Web/HTML/Element/tbody
+  if (all) {
     return (
-        <>
-            <tr>
-                <td>{text}</td>
-                <td>{value}</td>
-            </tr>
-        </>
-    )
-}
-
-const Statistics = ({good, neutral, bad}) => {
-    const totalScore = good + neutral + bad
-    const averageScore = (good - bad) / totalScore
-    const positivePercent = `${(good / totalScore) * 100}%`
-    
-    if (good !== 0 || neutral !== 0 || bad !== 0) {
-        return (
-            <>
-                <h2>statistics</h2>
-                <table>
-                    <tbody>
-                        <StatisticLine text="good" value={good}/>
-                        <StatisticLine text="neutral" value={neutral}/>
-                        <StatisticLine text="bad" value={bad}/>
-                        <StatisticLine text="all" value={totalScore}/>
-                        <StatisticLine text="average" value={averageScore}/>
-                        <StatisticLine text="positive" value={positivePercent}/>
-                    </tbody>
-                </table>
-            </>
-        )
-    } else {
-        return (
-            <div>No feedback given</div>
-        )
-    }
-}
-
-function App() {
-    const [numGoodFeedback, setNumGoodFeedback] = useState(0)
-    const [numNeutralFeedback, setNumNeutralFeedback] = useState(0)
-    const [numBadFeedback, setNumBadFeedback] = useState(0)
-
-    const incrementGood = () => setNumGoodFeedback(numGoodFeedback + 1)
-    const incrementNeutral = () => setNumNeutralFeedback(numNeutralFeedback + 1)
-    const incrementBad = () => setNumBadFeedback(numBadFeedback + 1)
-
-    return (
-        <>
-            <h2>give feedback</h2>
-            <Button onClick={incrementGood} text="good" />
-            <Button onClick={incrementNeutral} text="neutral" />
-            <Button onClick={incrementBad} text="bad" />
-
-            <Statistics good={numGoodFeedback} neutral={numNeutralFeedback} bad={numBadFeedback} />
-        </>
+      <div>
+        <h1>statistics</h1>
+        <table>
+          <tbody>
+            <StatisticLine text="good" value={good} />
+            <StatisticLine text="neutral" value={neutral} />
+            <StatisticLine text="bad" value={bad} />
+            <StatisticLine text="all" value={all} />
+            <StatisticLine text="average" value={!all ? 0 : ((good - bad) / all)} />
+            <StatisticLine text="positive" value={(!all ? 0 : (good / all) * 100) + "%"} />
+          </tbody>
+        </table>
+      </div>
     );
+  } else {
+    return <p>No feedback given</p>;
+  }
+};
+
+const App = () => {
+  // save clicks of each button to its own state
+  const [good, setGood] = useState(0);
+  const [neutral, setNeutral] = useState(0);
+  const [bad, setBad] = useState(0);
+
+  return (
+    <>
+      <h1>give feedback</h1>
+      <Button text="good" onClick={() => setGood(good + 1)} />
+      <Button text="neutral" onClick={() => setNeutral(neutral + 1)} />
+      <Button text="bad" onClick={() => setBad(bad + 1)} />
+      <Statistics good={good} neutral={neutral} bad={bad} />
+    </>
+  )
 }
 
-export default App
+export default App;
